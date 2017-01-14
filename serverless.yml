@@ -41,14 +41,16 @@ package:
 functions:
   getPledges:
     handler: CsharpHandlers::AwsDotnetCsharp.Handler::GetPledges
-     - http:
-         path: pledges
-         method: get
+    events:
+      - http:
+          path: pledges
+          method: get
   createPledge:
     handler: CsharpHandlers::AwsDotnetCsharp.Handler::CreatePledge
-     - http:
-         path: pledges
-         method: post
+    events:
+      - http:
+          path: pledges
+          method: post
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -61,13 +63,34 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:  
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: offset-trump
+        AttributeDefinitions:
+          - AttributeName: pledgeID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pledgeID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    DynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: DynamoDbTable
+      Properties:
+        PolicyName: lambda-dynamodb
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:Scan
+              Resource: arn:aws:dynamodb:us-east-1:193791823426:table/offset-trump
+        Roles:
+          - Ref: IamRoleLambdaExecution
