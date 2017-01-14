@@ -22,7 +22,7 @@ namespace AwsDotnetCsharp
 
         public async Task<Response> CreatePledge(Request request)
         {
-            var pledge = request.Body.Replace("\"", "");
+            var pledge = ExtractPledge(request.Body);
 
             var client = new AmazonDynamoDBClient();
             await client.PutItemAsync(new PutItemRequest
@@ -31,6 +31,12 @@ namespace AwsDotnetCsharp
                 Item = new Dictionary<string, AttributeValue> { { PLEDGE_ID, new AttributeValue(pledge) } }
             });
             return new Response();
+        }
+
+        private static string ExtractPledge(string body)
+        {
+            var extractedFormData = body.Split('\n')[3];
+            return extractedFormData.Replace("\"", "");
         }
     }
 
@@ -53,7 +59,7 @@ namespace AwsDotnetCsharp
         public int StatusCode { get; set; } = 200;
         [JsonProperty("headers")]
         public Dictionary<string, string> Headers { get; set; }
-            = new Dictionary<string, string> { { "Access-Control-Allow-Origin": "*"}};
+            = new Dictionary<string, string> { { "Access-Control-Allow-Origin", "*"}};
         [JsonProperty("body")]
         public string Body { get; set; }
     }
