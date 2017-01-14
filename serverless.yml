@@ -1,17 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: 
+service: offset-trump
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -52,16 +39,16 @@ package:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: CsharpHandlers::AwsDotnetCsharp.Handler::Hello
-
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
+  getPledges:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::GetPledges
+     - http:
+         path: pledges
+         method: get
+  createPledge:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::CreatePledge
+     - http:
+         path: pledges
+         method: post
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic

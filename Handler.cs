@@ -1,36 +1,42 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace AwsDotnetCsharp
 {
     public class Handler
     {
-       public Response Hello(Request request)
-       {
-           return new Response("Go Serverless v1.0! Your function executed successfully!", request);
-       }
-    }
+        public Response GetPledges(Request request)
+        {
+            return new Response($"Go Serverless v1.0! Your function executed successfully! body: {request.Body}");
+        }
 
-    public class Response
-    {
-      public string Message {get; set;}
-      public Request Request {get; set;}
-
-      public Response(string message, Request request){
-        Message = message;
-        Request = request;
-      }
+        public Response CreatePledge(Request request)
+        {
+            return new Response($"Go Serverless v1.0! Your function executed successfully! body: {request.Body}");
+        }
     }
 
     public class Request
     {
-      public string Key1 {get; set;}
-      public string Key2 {get; set;}
-      public string Key3 {get; set;}
+        [JsonProperty("body")]
+        public string Body { get; set; }
+    }
 
-      public Request(string key1, string key2, string key3){
-        Key1 = key1;
-        Key2 = key2;
-        Key3 = key3;
-      }
+    public class Response
+    {
+        public Response()
+        { }
+
+        public Response(object body)
+        {
+            this.Body = JsonConvert.SerializeObject(body);
+        }
+        [JsonProperty("statusCode")]
+        public int StatusCode { get; set; } = 200;
+        [JsonProperty("headers")]
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+        [JsonProperty("body")]
+        public string Body { get; set; }
     }
 }
