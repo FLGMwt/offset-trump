@@ -5,10 +5,8 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>Vitality</title>
+    <title>#OffsetTrump</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -79,6 +77,7 @@
         margin-top: 30px;
     }
     </style>
+
     <!-- Landing Page Demo Styles - FLGM overrides -->
     <style>
     .preview-pane {
@@ -94,7 +93,7 @@
     }
 
     .demo-header-content {
-        background-color: #222;
+        background-color: rgba(2, 2, 2, .5);
     }
     </style>
 
@@ -107,17 +106,7 @@
             <div class="container">
                 <h1>Offset Trump</h1>
                 <hr class="colored">
-                <p>Pledge to do something good over the next four years to offset the potential negative effects that will result from the Trump presidency.</p>
-                <!--<ul class="list-inline cta-list">
-                    <li>
-                        <a href="#previews" class="btn btn-outline-light page-scroll-demo">View Demos</a>
-                    </li>
-                    <li>
-                        <a href="docs/index.html" class="btn btn-outline-light page-scroll-demo">Documentation</a>
-                    </li>
-                </ul>-->
-
-
+                <p>Pledge to do something good over the next four years to offset the potential negative effects of the Trump presidency</p>
             </div>
         </div>
     </div>
@@ -140,8 +129,6 @@
     <div class="container" id="pledges">
     </div>
 
-
-    <!--<div class="col-md-4">-->
     <div class="hidden">
         <div id="pane-template" class="col-md-4">
             <div class="preview-pane">
@@ -192,13 +179,9 @@
                     row.classList.add('content-row');
                     pledgesDiv.appendChild(row);
                 }
-
-                // var pledge = document.createElement('div');
                 var pledge = pledgeTemplate.cloneNode(true);
                 pledge.removeAttribute('id');
                 pledge.querySelector('[data-pledge]').innerText = pledgeItem.Pledge;
-                // pledge.innerText = pledgeItem.Pledge;
-                // pledge.classList.add('col-md-4');
                 row.appendChild(pledge);
             }
 
