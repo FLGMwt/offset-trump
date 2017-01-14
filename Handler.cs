@@ -22,11 +22,13 @@ namespace AwsDotnetCsharp
 
         public async Task<Response> CreatePledge(Request request)
         {
+            var pledge = request.Body.Replace("\"", "");
+
             var client = new AmazonDynamoDBClient();
             await client.PutItemAsync(new PutItemRequest
             {
                 TableName = TABLE_NAME,
-                Item = new Dictionary<string, AttributeValue> { { PLEDGE_ID, new AttributeValue(request.Body) } }
+                Item = new Dictionary<string, AttributeValue> { { PLEDGE_ID, new AttributeValue(pledge) } }
             });
             return new Response();
         }
@@ -50,7 +52,8 @@ namespace AwsDotnetCsharp
         [JsonProperty("statusCode")]
         public int StatusCode { get; set; } = 200;
         [JsonProperty("headers")]
-        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers { get; set; }
+            = new Dictionary<string, string> { { "Access-Control-Allow-Origin": "*"}};
         [JsonProperty("body")]
         public string Body { get; set; }
     }
