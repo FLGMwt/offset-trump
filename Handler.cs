@@ -14,14 +14,37 @@ namespace AwsDotnetCsharp
         private const string IS_CLEARED = "is_cleared";
         private const string TABLE_NAME = "offset-trump";
 
-        public async Task<Response> GetPledges(Request request)
+        private static async Task<ScanResponse> FetchPledges()
         {
             var client = new AmazonDynamoDBClient();
             var response = await client.ScanAsync(TABLE_NAME, new List<string> { PLEDGE_ID, IS_CLEARED });
+            return response;
+        }
+
+        public async Task<Response> GetPledges(Request request)
+        {
+            var response = await FetchPledges();
             var pledges = response.Items.Select(item => new
             {
                 Pledge = item[IS_CLEARED].BOOL ? item[PLEDGE_ID].S : "Pending moderation"
             }).ToList();
+            return new Response(pledges);
+        }
+
+        public async Task<Response> AdminGetPledges(Request request)
+        {
+            if (!request.IsAuthorized())
+            {
+                return new Response(new List<object>());
+            }
+            var response = await FetchPledges();
+            var pledges = response.Items
+                .Where(item => !item[IS_CLEARED].BOOL)
+                .Select(item => new
+                {
+                    Pledge = item[PLEDGE_ID].S
+                })
+                .ToList();
             return new Response(pledges);
         }
 
@@ -50,8 +73,22 @@ namespace AwsDotnetCsharp
 
     public class Request
     {
+        public const string ADMIN_KEY = "CHANGEME";
+
         [JsonProperty("body")]
         public string Body { get; set; }
+
+        [JsonProperty("pathParameters")]
+        public Dictionary<string,string> PathParameters { get; set; }
+
+        public bool IsAuthorized()
+        {
+            if (PathParameters.ContainsKey("key") && PathParameters["key"] == ADMIN_KEY)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public class Response

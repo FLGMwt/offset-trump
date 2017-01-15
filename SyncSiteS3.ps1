@@ -1,1 +1,1 @@
-aws s3 sync site s3://www.offsettrump.com --acl public-read --dryrun
+aws s3 sync site s3://www.offsettrump.com --acl public-read

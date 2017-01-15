@@ -51,6 +51,36 @@ functions:
       - http:
           path: pledges
           method: post
+  getAdminPledges:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::AdminGetPledges
+    events:
+      - http:
+          path: admin/pledges/{key}
+          method: get
+          request:
+            parameters:
+              paths:
+                key: true
+  editPledge:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::EditPledge
+    events:
+      - http:
+          path: admin/pledges/{key}
+          method: put
+          request:
+            parameters:
+              paths:
+                key: true
+  deletePledge:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::DeletePledge
+    events:
+      - http:
+          path: admin/pledges/{key}
+          method: delete
+          request:
+            parameters:
+              paths:
+                key: true
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -63,7 +93,7 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-resources:  
+resources:
   Resources:
     DynamoDbTable:
       Type: AWS::DynamoDB::Table
