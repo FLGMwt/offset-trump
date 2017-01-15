@@ -91,6 +91,7 @@ resources:
                 - dynamodb:GetItem
                 - dynamodb:PutItem
                 - dynamodb:Scan
+                - dynamodb:DescribeTable
               Resource: arn:aws:dynamodb:us-east-1:193791823426:table/offset-trump
         Roles:
           - Ref: IamRoleLambdaExecution
