@@ -14,7 +14,7 @@ namespace AwsDotnetCsharp
         private const string IS_CLEARED = "is_cleared";
         private const string TABLE_NAME = "offset-trump";
 
-        private static async Task<ScanResponse> FetchPledges()
+        private static async Task<ScanResponse> FetchPledgesAsync()
         {
             var client = new AmazonDynamoDBClient();
             var response = await client.ScanAsync(TABLE_NAME, new List<string> { PLEDGE_ID, IS_CLEARED });
@@ -23,7 +23,7 @@ namespace AwsDotnetCsharp
 
         public async Task<Response> GetPledges(Request request)
         {
-            var response = await FetchPledges();
+            var response = await FetchPledgesAsync();
             var pledges = response.Items.Select(item => new
             {
                 Pledge = item[IS_CLEARED].BOOL ? item[PLEDGE_ID].S : "Pending moderation"
@@ -37,7 +37,7 @@ namespace AwsDotnetCsharp
             {
                 return new Response(new List<object>());
             }
-            var response = await FetchPledges();
+            var response = await FetchPledgesAsync();
             var pledges = response.Items
                 .Where(item => !item[IS_CLEARED].BOOL)
                 .Select(item => new
@@ -48,20 +48,50 @@ namespace AwsDotnetCsharp
             return new Response(pledges);
         }
 
+        public async Task<Response> EditPledge(Request request)
+        {
+            var pledgeText = ExtractPledge(request.Body);
+            await PutPledgeAsync(pledgeText, isCleared: true);
+            return new Response();
+        }
+
+        public async Task<Response> DeletePledge(Request request)
+        {
+            var pledgeText = ExtractPledge(request.Body);
+            await PutPledgeAsync(pledgeText, isCleared: true);
+            var client = new AmazonDynamoDBClient();
+            await DeletePledgeAsync(pledgeText);
+            return new Response();
+        }
+
         public async Task<Response> CreatePledge(Request request)
         {
             var pledgeText = ExtractPledge(request.Body);
             var lowerCasePledge = pledgeText.ToLower();
             if (!Helpers.Naughties.Any(n => lowerCasePledge.Contains(n)))
             {
+                await PutPledgeAsync(pledgeText, isCleared: false);
+            }
+            return new Response();
+        }
+
+        private async Task PutPledgeAsync(string pledgeText, bool isCleared)
+        {
                 var client = new AmazonDynamoDBClient();
                 var table = Table.LoadTable(client, TABLE_NAME);
                 var pledgeDocument = new Document();
                 pledgeDocument[PLEDGE_ID] = pledgeText;
-                pledgeDocument[IS_CLEARED] = new DynamoDBBool(false);
+                pledgeDocument[IS_CLEARED] = new DynamoDBBool(isCleared);
                 await table.PutItemAsync(pledgeDocument);
-            }
-            return new Response();
+        }
+
+        private async Task DeletePledgeAsync(string pledgeText)
+        {
+                var client = new AmazonDynamoDBClient();
+                var table = Table.LoadTable(client, TABLE_NAME);
+                var pledgeDocument = new Document();
+                pledgeDocument[PLEDGE_ID] = pledgeText;
+                await table.DeleteItemAsync(pledgeDocument);
         }
 
         private static string ExtractPledge(string body)

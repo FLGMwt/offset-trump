@@ -120,6 +120,7 @@ resources:
               Action:
                 - dynamodb:GetItem
                 - dynamodb:PutItem
+                - dynamodb:DeleteItem
                 - dynamodb:Scan
                 - dynamodb:DescribeTable
               Resource: arn:aws:dynamodb:us-east-1:193791823426:table/offset-trump
