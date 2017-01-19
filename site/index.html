@@ -139,32 +139,6 @@
         </div>
     </div>
 
-    <!-- Core Scripts -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Plugin Scripts -->
-    <script src="vendor/jquery.easing/jquery.easing.min.js"></script>
-    <script src="vendor/formstone/core.js"></script>
-    <script src="vendor/formstone/transition.js"></script>
-    <script src="vendor/formstone/background.js"></script>
-    <script src="vendor/mixitup/jquery.mixitup.js"></script>
-    <script src="vendor/wow/wow.min.js"></script>
-
-    <!-- Vitality Theme Scripts -->
-    <script src="js/vitality.js"></script>
-
-    <script>
-    // Smooth Scrolling: Smooth scrolls to an ID on the current page.
-    $('a.page-scroll-demo').bind('click', function(event) {
-        var $anchor = $(this);
-        $('html, body').stop().animate({
-            scrollTop: ($($anchor.attr('href')).offset().top)
-        }, 1250, 'easeInOutExpo');
-        event.preventDefault();
-    });
-    </script>
-
     <script>
         var pledgesEndpoint = 'https://px4xnd5ac1.execute-api.us-east-1.amazonaws.com/dev/pledges';
         var pledgesDiv = document.getElementById('pledges');
